@@ -1,0 +1,103 @@
+import sharp from "sharp";
+import { writeFileSync } from "fs";
+
+// Beautiful icon: open book with a path/road leading to a cross,
+// in warm earth tones on olive green background
+const svgIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5a6e4e"/>
+      <stop offset="100%" stop-color="#4a5c3f"/>
+    </linearGradient>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#faf6ee"/>
+      <stop offset="100%" stop-color="#f0e8d8"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4a855"/>
+      <stop offset="100%" stop-color="#c49a45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+
+  <!-- Subtle inner glow -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="2"/>
+
+  <!-- Open book - left page -->
+  <path d="M256 160 C256 160 200 148 140 155 C110 158 85 170 85 190 L85 360 C85 370 110 362 140 358 C200 350 256 365 256 365 Z"
+        fill="url(#page)" opacity="0.95"/>
+
+  <!-- Open book - right page -->
+  <path d="M256 160 C256 160 312 148 372 155 C402 158 427 170 427 190 L427 360 C427 370 402 362 372 358 C312 350 256 365 256 365 Z"
+        fill="url(#page)" opacity="0.90"/>
+
+  <!-- Book spine shadow -->
+  <path d="M256 160 L256 365" stroke="#5a6e4e" stroke-width="3" stroke-opacity="0.2"/>
+
+  <!-- Text lines on left page -->
+  <line x1="120" y1="195" x2="230" y2="192" stroke="#5a6e4e" stroke-opacity="0.15" stroke-width="3" stroke-linecap="round"/>
+  <line x1="125" y1="215" x2="235" y2="213" stroke="#5a6e4e" stroke-opacity="0.12" stroke-width="3" stroke-linecap="round"/>
+  <line x1="128" y1="235" x2="238" y2="234" stroke="#5a6e4e" stroke-opacity="0.10" stroke-width="3" stroke-linecap="round"/>
+  <line x1="130" y1="255" x2="240" y2="255" stroke="#5a6e4e" stroke-opacity="0.10" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Text lines on right page -->
+  <line x1="282" y1="192" x2="392" y2="195" stroke="#5a6e4e" stroke-opacity="0.15" stroke-width="3" stroke-linecap="round"/>
+  <line x1="278" y1="213" x2="388" y2="215" stroke="#5a6e4e" stroke-opacity="0.12" stroke-width="3" stroke-linecap="round"/>
+  <line x1="275" y1="234" x2="385" y2="235" stroke="#5a6e4e" stroke-opacity="0.10" stroke-width="3" stroke-linecap="round"/>
+  <line x1="273" y1="255" x2="383" y2="255" stroke="#5a6e4e" stroke-opacity="0.10" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Golden path/road from book upward -->
+  <path d="M256 280 Q256 240 256 200 Q256 160 256 130"
+        stroke="url(#gold)" stroke-width="6" fill="none" stroke-linecap="round" stroke-opacity="0.9"/>
+  <path d="M248 280 Q256 260 264 280"
+        fill="url(#gold)" opacity="0.6"/>
+
+  <!-- Small cross at the top of the path -->
+  <rect x="250" y="108" width="12" height="40" rx="3" fill="url(#gold)"/>
+  <rect x="240" y="118" width="32" height="10" rx="3" fill="url(#gold)"/>
+
+  <!-- Subtle light rays from cross -->
+  <line x1="256" y1="105" x2="256" y2="80" stroke="#d4a855" stroke-width="2" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="236" y1="115" x2="222" y2="100" stroke="#d4a855" stroke-width="2" stroke-opacity="0.3" stroke-linecap="round"/>
+  <line x1="276" y1="115" x2="290" y2="100" stroke="#d4a855" stroke-width="2" stroke-opacity="0.3" stroke-linecap="round"/>
+
+  <!-- "One Story" text -->
+  <text x="256" y="420" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif"
+        font-weight="700" font-size="48" fill="#faf6ee" letter-spacing="3" opacity="0.95">ONE STORY</text>
+</svg>
+`;
+
+async function generate() {
+  const svgBuffer = Buffer.from(svgIcon);
+
+  // Generate 512x512
+  await sharp(svgBuffer).resize(512, 512).png().toFile("public/icon-512.png");
+  console.log("Created icon-512.png");
+
+  // Generate 192x192
+  await sharp(svgBuffer).resize(192, 192).png().toFile("public/icon-192.png");
+  console.log("Created icon-192.png");
+
+  // Generate 180x180 Apple touch icon
+  await sharp(svgBuffer).resize(180, 180).png().toFile("public/apple-touch-icon.png");
+  console.log("Created apple-touch-icon.png");
+
+  // Generate favicon 32x32
+  await sharp(svgBuffer).resize(32, 32).png().toFile("public/favicon-32.png");
+  console.log("Created favicon-32.png");
+
+  // Generate favicon.ico (use 32x32 png, rename)
+  await sharp(svgBuffer).resize(48, 48).png().toFile("public/favicon-48.png");
+  console.log("Created favicon-48.png");
+
+  // Save SVG too
+  writeFileSync("public/icon.svg", svgIcon.trim());
+  console.log("Created icon.svg");
+
+  console.log("\nAll icons generated!");
+}
+
+generate().catch(console.error);
