@@ -18,7 +18,7 @@ const tabs: { id: Tab; label: string; icon: typeof BookOpen }[] = [
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t z-50 pb-safe">
+    <nav className="fixed bottom-3 left-3 right-3 bg-card/95 backdrop-blur-md border rounded-2xl z-50 shadow-lg">
       <div className="flex items-center justify-around max-w-lg mx-auto h-16">
         {tabs.map(tab => {
           const Icon = tab.icon;
