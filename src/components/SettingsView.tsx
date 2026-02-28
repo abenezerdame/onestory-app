@@ -1,0 +1,123 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Download, Upload, Trash2, Calendar, Info } from "lucide-react";
+
+interface SettingsViewProps {
+  startDate: string;
+  setStartDate: (date: string) => void;
+  exportProgress: () => void;
+  importProgress: (file: File) => void;
+  resetProgress: () => void;
+}
+
+export function SettingsView({ startDate, setStartDate, exportProgress, importProgress, resetProgress }: SettingsViewProps) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [resetOpen, setResetOpen] = useState(false);
+
+  return (
+    <div className="px-4 pt-4 pb-24 max-w-lg mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+        <p className="text-sm text-muted-foreground">Customize your experience</p>
+      </div>
+
+      {/* Start Date */}
+      <div className="rounded-2xl border bg-card p-5 mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Calendar className="w-4 h-4 text-primary" />
+          <h3 className="font-medium text-sm">Start Date</h3>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Set the date you began (or plan to begin) the reading plan. Today&apos;s reading is calculated from this date.
+        </p>
+        <input
+          type="date"
+          value={startDate}
+          onChange={e => setStartDate(e.target.value)}
+          className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+        />
+      </div>
+
+      {/* Data Management */}
+      <div className="rounded-2xl border bg-card p-5 mb-4">
+        <h3 className="font-medium text-sm mb-3">Data Management</h3>
+        <div className="space-y-3">
+          <Button onClick={exportProgress} variant="outline" className="w-full justify-start" size="sm">
+            <Download className="w-4 h-4 mr-2" />
+            Export Progress
+          </Button>
+
+          <Button onClick={() => fileRef.current?.click()} variant="outline" className="w-full justify-start" size="sm">
+            <Upload className="w-4 h-4 mr-2" />
+            Import Progress
+          </Button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".json"
+            className="hidden"
+            onChange={e => {
+              const file = e.target.files?.[0];
+              if (file) {
+                importProgress(file);
+                e.target.value = "";
+              }
+            }}
+          />
+
+          <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="w-full justify-start text-destructive border-destructive/20 hover:bg-destructive/5" size="sm">
+                <Trash2 className="w-4 h-4 mr-2" />
+                Reset All Progress
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Reset Progress</DialogTitle>
+                <DialogDescription>
+                  This will permanently delete all your reading progress. This action cannot be undone. Consider exporting your data first.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setResetOpen(false)}>Cancel</Button>
+                <Button variant="destructive" onClick={() => { resetProgress(); setResetOpen(false); }}>
+                  Reset Everything
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      {/* About */}
+      <div className="rounded-2xl border bg-card p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <Info className="w-4 h-4 text-primary" />
+          <h3 className="font-medium text-sm">About</h3>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed mb-2">
+          This app tracks your progress through the <strong>One Story That Leads to Jesus</strong> annual
+          reading plan by BibleProject. It covers the entire Bible in 358 days with daily Psalm readings
+          and 204 companion videos.
+        </p>
+        <div className="space-y-1.5">
+          <a
+            href="https://bibleproject.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-xs text-primary hover:underline"
+          >
+            Visit BibleProject
+          </a>
+        </div>
+        <p className="text-[10px] text-muted-foreground mt-3">
+          All reading plan content and videos are property of BibleProject. Bible links open in YouVersion (NLT).
+        </p>
+      </div>
+    </div>
+  );
+}
