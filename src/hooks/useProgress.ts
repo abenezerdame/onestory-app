@@ -106,6 +106,22 @@ export function useProgress() {
     });
   }, []);
 
+  const markAllTillDay = useCallback((tillDay: number) => {
+    setProgress(prev => {
+      const next = { ...prev, chaptersRead: { ...prev.chaptersRead }, psalmsRead: { ...prev.psalmsRead }, videosWatched: { ...prev.videosWatched } };
+      for (let day = 1; day <= tillDay; day++) {
+        const reading = readingPlan.find(d => d.day === day);
+        if (!reading) continue;
+        const chapters = parseChapters(reading.chapters);
+        chapters.forEach(ch => { next.chaptersRead[`d${day}-ch${ch}`] = true; });
+        next.psalmsRead[`d${day}-psalm`] = true;
+        reading.videos.forEach((_, i) => { next.videosWatched[`d${day}-v${i}`] = true; });
+      }
+      saveProgress(next);
+      return next;
+    });
+  }, []);
+
   const getDayProgress = useCallback((day: number): number => {
     const reading = readingPlan.find(d => d.day === day);
     if (!reading) return 0;
@@ -202,6 +218,7 @@ export function useProgress() {
     isVideoWatched,
     isDayComplete,
     markDayComplete,
+    markAllTillDay,
     getDayProgress,
     stats,
     exportProgress,

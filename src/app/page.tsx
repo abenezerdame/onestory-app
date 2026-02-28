@@ -57,6 +57,7 @@ export default function Home() {
           exportProgress={progress.exportProgress}
           importProgress={progress.importProgress}
           resetProgress={progress.resetProgress}
+          markAllTillDay={progress.markAllTillDay}
         />
       )}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />

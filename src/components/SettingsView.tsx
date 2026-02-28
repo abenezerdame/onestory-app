@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Download, Upload, Trash2, Calendar, Info } from "lucide-react";
+import { Download, Upload, Trash2, Calendar, Info, CheckCheck } from "lucide-react";
 
 interface SettingsViewProps {
   startDate: string;
@@ -11,11 +11,14 @@ interface SettingsViewProps {
   exportProgress: () => void;
   importProgress: (file: File) => void;
   resetProgress: () => void;
+  markAllTillDay: (day: number) => void;
 }
 
-export function SettingsView({ startDate, setStartDate, exportProgress, importProgress, resetProgress }: SettingsViewProps) {
+export function SettingsView({ startDate, setStartDate, exportProgress, importProgress, resetProgress, markAllTillDay }: SettingsViewProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [resetOpen, setResetOpen] = useState(false);
+  const [markTillDay, setMarkTillDay] = useState<number>(1);
+  const [markTillOpen, setMarkTillOpen] = useState(false);
 
   return (
     <div className="px-4 pt-4 pb-24 max-w-lg mx-auto">
@@ -39,6 +42,50 @@ export function SettingsView({ startDate, setStartDate, exportProgress, importPr
           onChange={e => setStartDate(e.target.value)}
           className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
+      </div>
+
+      {/* Mark All Till Day */}
+      <div className="rounded-2xl border bg-card p-5 mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <CheckCheck className="w-4 h-4 text-primary" />
+          <h3 className="font-medium text-sm">Mark All Till Day</h3>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Mark all days from day 1 up to a specific day as fully complete (chapters, psalm, and videos).
+        </p>
+        <div className="flex gap-2 items-center">
+          <input
+            type="number"
+            min={1}
+            max={358}
+            value={markTillDay}
+            onChange={e => setMarkTillDay(Math.min(358, Math.max(1, parseInt(e.target.value) || 1)))}
+            className="w-24 rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+          />
+          <span className="text-xs text-muted-foreground">of 358</span>
+          <Dialog open={markTillOpen} onOpenChange={setMarkTillOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="ml-auto">
+                <CheckCheck className="w-4 h-4 mr-1.5" />
+                Mark Till Day {markTillDay}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Mark All Till Day {markTillDay}</DialogTitle>
+                <DialogDescription>
+                  This will mark all readings from day 1 through day {markTillDay} as complete. Already-completed days will not be affected.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setMarkTillOpen(false)}>Cancel</Button>
+                <Button onClick={() => { markAllTillDay(markTillDay); setMarkTillOpen(false); }}>
+                  Confirm
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Data Management */}
