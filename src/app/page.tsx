@@ -41,7 +41,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      {activeTab === "today" && <TodayView {...commonProps} />}
+      {activeTab === "today" && <TodayView {...commonProps} stats={progress.stats} startDate={dateState.startDate} />}
       {activeTab === "plan" && <PlanView {...commonProps} />}
       {activeTab === "progress" && (
         <ProgressView

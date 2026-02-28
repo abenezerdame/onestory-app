@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { readingPlan } from "@/data/readingPlan";
 import { DayCard } from "./DayCard";
+import { Flame, BookOpen, Play, CheckCircle2 } from "lucide-react";
 
 interface TodayViewProps {
   getCurrentDay: () => number;
@@ -16,6 +17,18 @@ interface TodayViewProps {
   toggleVideo: (day: number, videoIndex: number) => void;
   markDayComplete: (day: number) => void;
   getDayProgress: (day: number) => number;
+  stats: {
+    daysCompleted: number;
+    totalDays: number;
+    chaptersRead: number;
+    psalmsRead: number;
+    videosWatched: number;
+    totalVideos: number;
+    booksCompleted: number;
+    totalBooks: number;
+    streak: number;
+  };
+  startDate: string;
 }
 
 export function TodayView(props: TodayViewProps) {
@@ -31,6 +44,9 @@ export function TodayView(props: TodayViewProps) {
 
   const date = props.getDateForDay(viewDay);
   const dateLabel = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
+  const { stats } = props;
+  const overallPct = Math.round((stats.daysCompleted / stats.totalDays) * 100);
 
   return (
     <div className="px-4 pt-4 pb-24 max-w-lg mx-auto">
@@ -58,6 +74,50 @@ export function TodayView(props: TodayViewProps) {
           Back to today (Day {todayDay})
         </button>
       )}
+
+      {/* Snap Summary */}
+      <div className="mt-4 rounded-2xl border bg-card p-4">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Your Journey</span>
+          <span className="text-sm font-bold text-primary">{overallPct}%</span>
+        </div>
+        <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden mb-3">
+          <div
+            className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
+            style={{ width: `${overallPct}%` }}
+          />
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          <div className="text-center">
+            <div className="flex justify-center mb-1">
+              <Flame className="w-3.5 h-3.5 text-amber" />
+            </div>
+            <p className="text-base font-bold leading-none">{stats.streak}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">streak</p>
+          </div>
+          <div className="text-center">
+            <div className="flex justify-center mb-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+            </div>
+            <p className="text-base font-bold leading-none">{stats.daysCompleted}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">days</p>
+          </div>
+          <div className="text-center">
+            <div className="flex justify-center mb-1">
+              <BookOpen className="w-3.5 h-3.5 text-primary" />
+            </div>
+            <p className="text-base font-bold leading-none">{stats.booksCompleted}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">books</p>
+          </div>
+          <div className="text-center">
+            <div className="flex justify-center mb-1">
+              <Play className="w-3.5 h-3.5 text-olive-light" />
+            </div>
+            <p className="text-base font-bold leading-none">{stats.videosWatched}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">videos</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
