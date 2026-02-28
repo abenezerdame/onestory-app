@@ -18,9 +18,9 @@ const tabs: { id: Tab; label: string; icon: typeof BookOpen }[] = [
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-3 left-3 right-3 z-50 max-w-lg mx-auto">
-      <div className="bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl shadow-xl shadow-black/10 dark:shadow-black/40">
-        <div className="flex items-center justify-around h-[60px] px-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 max-w-lg mx-auto">
+      <div className="bg-card border-t border-border/50">
+        <div className="flex items-center justify-around px-2 pb-safe" style={{ height: 60 }}>
           {tabs.map(tab => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -28,26 +28,27 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className="relative flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-all duration-200 group"
+                className="flex-1 flex flex-col items-center justify-center"
                 aria-label={tab.label}
               >
-                {active && (
-                  <span className="absolute inset-1 rounded-xl bg-primary/10 dark:bg-primary/15 transition-all duration-200" />
-                )}
-                <Icon
-                  className={`relative w-[19px] h-[19px] transition-all duration-200 ${
-                    active
-                      ? "text-primary scale-110"
-                      : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
-                  }`}
-                />
-                <span
-                  className={`relative text-[10px] font-medium leading-none transition-all duration-200 ${
-                    active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                <div
+                  className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-colors duration-150 ${
+                    active ? "bg-muted" : ""
                   }`}
                 >
-                  {tab.label}
-                </span>
+                  <Icon
+                    className={`w-5 h-5 transition-colors ${
+                      active ? "text-foreground" : "text-muted-foreground"
+                    }`}
+                  />
+                  <span
+                    className={`text-[10px] leading-none transition-colors ${
+                      active ? "text-foreground font-semibold" : "text-muted-foreground font-medium"
+                    }`}
+                  >
+                    {tab.label}
+                  </span>
+                </div>
               </button>
             );
           })}

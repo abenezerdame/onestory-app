@@ -60,7 +60,7 @@ export function PlanView(props: PlanViewProps) {
   };
 
   return (
-    <div className="px-4 pt-4 pb-24 max-w-lg mx-auto">
+    <div className="px-4 pt-5 pb-20 max-w-lg mx-auto">
       <div className="mb-4">
         <h1 className="text-2xl font-bold tracking-tight">Reading Plan</h1>
         <p className="text-sm text-muted-foreground">358 days through the Bible</p>
@@ -93,7 +93,7 @@ export function PlanView(props: PlanViewProps) {
           const bookComplete = completed === total;
 
           return (
-            <div key={book} className="rounded-xl border bg-card overflow-hidden">
+            <div key={book} className="rounded-2xl bg-card overflow-hidden">
               <button
                 onClick={() => setExpandedBook(isOpen ? null : book)}
                 className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
