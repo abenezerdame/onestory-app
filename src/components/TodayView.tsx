@@ -49,6 +49,11 @@ export function TodayView(props: TodayViewProps) {
   const overallPct = Math.round((stats.daysCompleted / stats.totalDays) * 100);
   const daysBehind = Math.max(0, (todayDay - 1) - stats.daysCompleted);
 
+  // First day that is not yet complete (used by the behind banner)
+  const firstUncompletedDay = daysBehind > 0
+    ? (Array.from({ length: todayDay }, (_, i) => i + 1).find(d => !props.isDayComplete(d)) ?? todayDay)
+    : null;
+
   return (
     <div className="px-4 pt-5 pb-24 max-w-lg mx-auto">
       {/* Page header */}
@@ -59,17 +64,20 @@ export function TodayView(props: TodayViewProps) {
 
       {/* Behind / on-track banner */}
       {daysBehind > 0 ? (
-        <div className="flex items-start gap-3 rounded-2xl bg-amber/10 border border-amber/20 px-4 py-3 mb-4">
+        <button
+          onClick={() => firstUncompletedDay && setViewDay(firstUncompletedDay)}
+          className="w-full flex items-start gap-3 rounded-2xl bg-amber/10 border border-amber/20 px-4 py-3 mb-4 text-left hover:bg-amber/15 active:bg-amber/20 transition-colors"
+        >
           <AlertTriangle className="w-4 h-4 text-amber mt-0.5 shrink-0" />
-          <div>
+          <div className="flex-1">
             <p className="text-sm font-medium leading-snug">
               {daysBehind} {daysBehind === 1 ? "day" : "days"} behind schedule
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {stats.daysCompleted} of {todayDay - 1} expected days done.
+              {stats.daysCompleted} of {todayDay - 1} expected days done. Tap to catch up →
             </p>
           </div>
-        </div>
+        </button>
       ) : todayDay > 1 && stats.daysCompleted >= todayDay - 1 ? (
         <div className="flex items-center gap-3 rounded-2xl bg-success/10 border border-success/20 px-4 py-3 mb-4">
           <TrendingUp className="w-4 h-4 text-success shrink-0" />
