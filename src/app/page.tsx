@@ -8,11 +8,13 @@ import { ProgressView } from "@/components/ProgressView";
 import { SettingsView } from "@/components/SettingsView";
 import { useProgress } from "@/hooks/useProgress";
 import { useStartDate } from "@/hooks/useStartDate";
+import { useTheme } from "@/hooks/useTheme";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("today");
   const progress = useProgress();
   const dateState = useStartDate();
+  const { isDark, toggleTheme } = useTheme();
 
   if (!progress.loaded || !dateState.loaded) {
     return (
@@ -58,6 +60,8 @@ export default function Home() {
           importProgress={progress.importProgress}
           resetProgress={progress.resetProgress}
           markAllTillDay={progress.markAllTillDay}
+          isDark={isDark}
+          toggleTheme={toggleTheme}
         />
       )}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
