@@ -39,35 +39,31 @@ function ItemRow({
   ringClass: string;
 }) {
   return (
-    <div className="bg-card rounded-2xl flex items-center gap-3.5 px-4 py-3.5">
+    <a
+      href={href ?? "#"}
+      target={href ? "_blank" : undefined}
+      rel="noopener noreferrer"
+      onClick={!href ? e => e.preventDefault() : undefined}
+      className="bg-card rounded-xl flex items-center gap-3 px-3.5 py-2.5 hover:bg-muted/30 active:bg-muted/50 transition-colors"
+    >
       <button
-        onClick={onToggle}
-        className={`shrink-0 w-[26px] h-[26px] rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+        onClick={e => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
+        className={`shrink-0 w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
           checked ? ringClass : "border-muted-foreground/25 hover:border-muted-foreground/50"
         }`}
         aria-label={checked ? "Unmark" : "Mark done"}
       >
-        {checked && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+        {checked && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
       </button>
       <span
-        className={`flex-1 text-[15px] leading-snug select-none ${
+        className={`flex-1 text-sm leading-snug select-none ${
           checked ? "line-through text-muted-foreground" : "text-foreground"
         }`}
       >
         {label}
       </span>
-      {href && (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={e => e.stopPropagation()}
-          className="shrink-0 text-muted-foreground/35 hover:text-muted-foreground transition-colors"
-        >
-          <ExternalLink className="w-3.5 h-3.5" />
-        </a>
-      )}
-    </div>
+      {href && <ExternalLink className="w-3 h-3 shrink-0 text-muted-foreground/35" />}
+    </a>
   );
 }
 
@@ -177,10 +173,10 @@ export function DayCard({
         {!complete && (
           <button
             onClick={() => markDayComplete(reading.day)}
-            className="w-full bg-card rounded-2xl flex items-center gap-3.5 px-4 py-3.5 text-primary font-medium text-[15px] hover:opacity-80 active:opacity-70 transition-opacity"
+            className="w-full bg-card rounded-xl flex items-center gap-3 px-3.5 py-2.5 text-primary font-medium text-sm hover:bg-muted/30 active:bg-muted/50 transition-colors"
           >
-            <div className="shrink-0 w-[26px] h-[26px] rounded-full border-2 border-primary flex items-center justify-center">
-              <Check className="w-3 h-3 text-primary" strokeWidth={3} />
+            <div className="shrink-0 w-[22px] h-[22px] rounded-full border-2 border-primary flex items-center justify-center">
+              <Check className="w-2.5 h-2.5 text-primary" strokeWidth={3} />
             </div>
             Mark Day Complete
           </button>
