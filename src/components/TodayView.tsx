@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { readingPlan } from "@/data/readingPlan";
 import { DayCard } from "./DayCard";
-import { Flame, BookOpen, Play, CheckCircle2 } from "lucide-react";
+import { Flame, BookOpen, Play, CheckCircle2, AlertTriangle, TrendingUp } from "lucide-react";
 
 interface TodayViewProps {
   getCurrentDay: () => number;
@@ -47,13 +47,34 @@ export function TodayView(props: TodayViewProps) {
 
   const { stats } = props;
   const overallPct = Math.round((stats.daysCompleted / stats.totalDays) * 100);
+  const daysBehind = Math.max(0, (todayDay - 1) - stats.daysCompleted);
 
   return (
     <div className="px-4 pt-4 pb-24 max-w-lg mx-auto">
-      <div className="mb-6">
+      <div className="mb-5">
         <h1 className="text-2xl font-bold tracking-tight">One Story</h1>
         <p className="text-sm text-muted-foreground">That Leads to Jesus</p>
       </div>
+
+      {/* Behind / On-track banner */}
+      {daysBehind > 0 ? (
+        <div className="flex items-start gap-3 rounded-2xl bg-amber/10 border border-amber/25 px-4 py-3 mb-4">
+          <AlertTriangle className="w-4 h-4 text-amber mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-amber-foreground leading-snug">
+              {daysBehind} {daysBehind === 1 ? "day" : "days"} behind schedule
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              You&apos;ve completed {stats.daysCompleted} of {todayDay - 1} expected days.
+            </p>
+          </div>
+        </div>
+      ) : todayDay > 1 && stats.daysCompleted >= todayDay - 1 ? (
+        <div className="flex items-center gap-3 rounded-2xl bg-success/10 border border-success/25 px-4 py-3 mb-4">
+          <TrendingUp className="w-4 h-4 text-success shrink-0" />
+          <p className="text-sm font-medium text-success">You&apos;re on track — great work!</p>
+        </div>
+      ) : null}
 
       <DayCard
         reading={reading}
