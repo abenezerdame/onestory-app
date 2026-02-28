@@ -22,21 +22,179 @@ interface DayCardProps {
   onPrev?: () => void;
   onNext?: () => void;
   showNav?: boolean;
+  mode?: "today" | "plan";
+}
+
+function ItemRow({
+  checked,
+  onToggle,
+  label,
+  href,
+  ringClass,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+  label: string;
+  href?: string;
+  ringClass: string;
+}) {
+  return (
+    <div className="bg-card rounded-2xl flex items-center gap-3.5 px-4 py-3.5">
+      <button
+        onClick={onToggle}
+        className={`shrink-0 w-[26px] h-[26px] rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
+          checked ? ringClass : "border-muted-foreground/25 hover:border-muted-foreground/50"
+        }`}
+        aria-label={checked ? "Unmark" : "Mark done"}
+      >
+        {checked && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+      </button>
+      <span
+        className={`flex-1 text-[15px] leading-snug select-none ${
+          checked ? "line-through text-muted-foreground" : "text-foreground"
+        }`}
+      >
+        {label}
+      </span>
+      {href && (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={e => e.stopPropagation()}
+          className="shrink-0 text-muted-foreground/35 hover:text-muted-foreground transition-colors"
+        >
+          <ExternalLink className="w-3.5 h-3.5" />
+        </a>
+      )}
+    </div>
+  );
 }
 
 export function DayCard({
   reading, dateLabel, isToday, isChapterRead, isPsalmRead, isVideoWatched,
   isDayComplete: isDayCompleteFn, toggleChapter, togglePsalm, toggleVideo,
-  markDayComplete, getDayProgress, onPrev, onNext, showNav = false,
+  markDayComplete, getDayProgress, onPrev, onNext, showNav = false, mode = "plan",
 }: DayCardProps) {
   const chapters = parseChapters(reading.chapters);
   const progress = getDayProgress(reading.day);
   const complete = isDayCompleteFn(reading.day);
+
+  // ── Today mode: card-per-item Todoist style ──────────────────────────
+  if (mode === "today") {
+    return (
+      <div>
+        {/* Nav header */}
+        {showNav && (
+          <div className="flex items-center justify-between mb-5">
+            <button
+              onClick={onPrev}
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-card text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Previous day"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-base font-bold">Day {reading.day}</span>
+                {isToday && (
+                  <span className="text-[11px] bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-medium">
+                    Today
+                  </span>
+                )}
+                {complete && <Check className="w-4 h-4 text-success" />}
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">{dateLabel}</p>
+            </div>
+            <button
+              onClick={onNext}
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-card text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Next day"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
+        {/* Bible chapters */}
+        <div className="mb-4">
+          <div className="flex items-baseline gap-1.5 mb-2 px-0.5">
+            <span className="text-sm font-bold">{reading.book}</span>
+            <span className="text-sm text-muted-foreground">{chapters.length}</span>
+          </div>
+          <div className="space-y-2">
+            {chapters.map(ch => (
+              <ItemRow
+                key={ch}
+                checked={isChapterRead(reading.day, ch)}
+                onToggle={() => toggleChapter(reading.day, ch)}
+                label={`Chapter ${ch}`}
+                href={getYouVersionUrl(reading.book, ch)}
+                ringClass="border-primary bg-primary"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Psalm */}
+        <div className="mb-4">
+          <div className="flex items-baseline gap-1.5 mb-2 px-0.5">
+            <span className="text-sm font-bold">Psalm</span>
+            <span className="text-sm text-muted-foreground">1</span>
+          </div>
+          <ItemRow
+            checked={isPsalmRead(reading.day)}
+            onToggle={() => togglePsalm(reading.day)}
+            label={`Psalm ${reading.psalm}`}
+            href={getPsalmUrl(reading.psalm)}
+            ringClass="border-amber bg-amber"
+          />
+        </div>
+
+        {/* Videos */}
+        {reading.videos.length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-baseline gap-1.5 mb-2 px-0.5">
+              <span className="text-sm font-bold">Videos</span>
+              <span className="text-sm text-muted-foreground">{reading.videos.length}</span>
+            </div>
+            <div className="space-y-2">
+              {reading.videos.map((video, i) => (
+                <ItemRow
+                  key={i}
+                  checked={isVideoWatched(reading.day, i)}
+                  onToggle={() => toggleVideo(reading.day, i)}
+                  label={video.title}
+                  href={video.url}
+                  ringClass="border-olive bg-olive"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Mark day complete */}
+        {!complete && (
+          <button
+            onClick={() => markDayComplete(reading.day)}
+            className="w-full bg-card rounded-2xl flex items-center gap-3.5 px-4 py-3.5 text-primary font-medium text-[15px] hover:opacity-80 active:opacity-70 transition-opacity"
+          >
+            <div className="shrink-0 w-[26px] h-[26px] rounded-full border-2 border-primary flex items-center justify-center">
+              <Check className="w-3 h-3 text-primary" strokeWidth={3} />
+            </div>
+            Mark Day Complete
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // ── Plan mode: compact all-in-one card ──────────────────────────────
   const circumference = 2 * Math.PI * 18;
   const offset = circumference - progress * circumference;
 
   return (
-    <div className={`rounded-2xl border bg-card p-5 shadow-sm transition-all ${isToday ? "ring-2 ring-primary/30" : ""} ${complete ? "bg-success/5" : ""}`}>
+    <div className={`rounded-2xl bg-card p-5 transition-all ${isToday ? "ring-2 ring-primary/30" : ""} ${complete ? "bg-success/5" : ""}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -59,8 +217,6 @@ export function DayCard({
             </button>
           )}
         </div>
-
-        {/* Progress ring */}
         <div className="relative w-12 h-12">
           <svg className="w-12 h-12 -rotate-90" viewBox="0 0 40 40">
             <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" className="text-muted" strokeWidth="2.5" />
@@ -75,9 +231,9 @@ export function DayCard({
         </div>
       </div>
 
-      {/* Book & Chapters */}
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2.5">
+      {/* Chapters */}
+      <div className="mb-3">
+        <div className="flex items-center gap-2 mb-2">
           <BookOpen className="w-4 h-4 text-primary" />
           <h3 className="font-medium text-sm text-primary">{reading.book}</h3>
         </div>
@@ -106,8 +262,8 @@ export function DayCard({
       </div>
 
       {/* Psalm */}
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2.5">
+      <div className="mb-3">
+        <div className="flex items-center gap-2 mb-2">
           <BookOpen className="w-4 h-4 text-amber" />
           <h3 className="font-medium text-sm text-amber">Psalm</h3>
         </div>
@@ -131,8 +287,8 @@ export function DayCard({
 
       {/* Videos */}
       {reading.videos.length > 0 && (
-        <div className="mb-4">
-          <div className="flex items-center gap-2 mb-2.5">
+        <div className="mb-3">
+          <div className="flex items-center gap-2 mb-2">
             <Play className="w-4 h-4 text-olive-light" />
             <h3 className="font-medium text-sm text-olive-light">Videos</h3>
           </div>
@@ -162,7 +318,6 @@ export function DayCard({
         </div>
       )}
 
-      {/* Mark all complete */}
       {!complete && (
         <Button
           onClick={() => markDayComplete(reading.day)}

@@ -46,14 +46,14 @@ export function ProgressView({ stats, isDayComplete, startDate }: ProgressViewPr
   };
 
   return (
-    <div className="px-4 pt-4 pb-24 max-w-lg mx-auto">
+    <div className="px-4 pt-5 pb-20 max-w-lg mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Progress</h1>
         <p className="text-sm text-muted-foreground">Your reading journey</p>
       </div>
 
       {/* Overall progress */}
-      <div className="rounded-2xl border bg-card p-5 mb-4">
+      <div className="rounded-2xl bg-card p-5 mb-3">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium">Overall Progress</span>
           <span className="text-2xl font-bold text-primary">{overallPct}%</span>
@@ -70,7 +70,7 @@ export function ProgressView({ stats, isDayComplete, startDate }: ProgressViewPr
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      <div className="grid grid-cols-2 gap-2.5 mb-3">
         <StatCard icon={Flame} label="Streak" value={`${stats.streak}`} sub="consecutive days" color="text-amber" />
         <StatCard icon={BookOpen} label="Chapters" value={`${stats.chaptersRead}`} sub="chapters read" color="text-primary" />
         <StatCard icon={Play} label="Videos" value={`${stats.videosWatched}/${stats.totalVideos}`} sub="watched" color="text-olive-light" />
@@ -80,7 +80,7 @@ export function ProgressView({ stats, isDayComplete, startDate }: ProgressViewPr
       </div>
 
       {/* Book Grid */}
-      <div className="rounded-2xl border bg-card p-5">
+      <div className="rounded-2xl bg-card p-5">
         <h3 className="text-sm font-medium mb-3">Books of the Bible</h3>
         <div className="grid grid-cols-8 gap-1.5">
           {booksInOrder.map(book => {
@@ -116,7 +116,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
   icon: typeof BookOpen; label: string; value: string; sub: string; color: string;
 }) {
   return (
-    <div className="rounded-xl border bg-card p-3.5">
+    <div className="rounded-2xl bg-card p-3.5">
       <div className="flex items-center gap-2 mb-1.5">
         <Icon className={`w-4 h-4 ${color}`} />
         <span className="text-xs text-muted-foreground">{label}</span>
