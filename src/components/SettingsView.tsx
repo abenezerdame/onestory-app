@@ -42,7 +42,7 @@ export function SettingsView({ startDate, setStartDate, exportProgress, importPr
   const [markTillOpen, setMarkTillOpen] = useState(false);
 
   return (
-    <div className="px-4 pt-5 pb-24 max-w-lg mx-auto">
+    <div className="px-4 pt-[72px] pb-8 max-w-lg mx-auto">
       <div className="mb-5">
         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
         <p className="text-sm text-muted-foreground">Customize your experience</p>

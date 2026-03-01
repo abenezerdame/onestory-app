@@ -18,9 +18,9 @@ const tabs: { id: Tab; label: string; icon: typeof BookOpen }[] = [
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 max-w-lg mx-auto">
-      <div className="bg-card border-t border-border/50">
-        <div className="flex items-center justify-around px-2 pb-safe" style={{ height: 60 }}>
+    <nav className="fixed top-0 left-0 right-0 z-50">
+      <div className="max-w-lg mx-auto bg-card border-b border-border/50">
+        <div className="flex items-center justify-around h-14 px-2">
           {tabs.map(tab => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -28,16 +28,16 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className="flex-1 flex flex-col items-center justify-center"
+                className="flex-1 flex flex-col items-center justify-center h-full relative"
                 aria-label={tab.label}
               >
                 <div
-                  className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-colors duration-150 ${
+                  className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-colors duration-150 ${
                     active ? "bg-muted" : ""
                   }`}
                 >
                   <Icon
-                    className={`w-5 h-5 transition-colors ${
+                    className={`w-[18px] h-[18px] transition-colors ${
                       active ? "text-foreground" : "text-muted-foreground"
                     }`}
                   />

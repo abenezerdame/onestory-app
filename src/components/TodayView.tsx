@@ -54,7 +54,7 @@ export function TodayView(props: TodayViewProps) {
     : null;
 
   return (
-    <div className="px-4 pt-5 pb-24 max-w-lg mx-auto">
+    <div className="px-4 pt-[72px] pb-8 max-w-lg mx-auto">
       {/* Page header */}
       <div className="mb-5">
         <h1 className="text-2xl font-bold tracking-tight">One Story</h1>
