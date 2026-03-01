@@ -154,7 +154,8 @@ export function useProgress() {
     })(),
     totalBooks: [...new Set(readingPlan.map(d => d.book))].length,
     streak: (() => {
-      // Calculate current streak from today backwards
+      // Calculate current streak: consecutive complete days ending at today
+      // (or yesterday if today isn't done yet, so a streak isn't broken mid-day)
       const startDateStr = typeof window !== "undefined" ? localStorage.getItem("onestory-start-date") : null;
       if (!startDateStr) return 0;
       const startDate = new Date(startDateStr);
@@ -163,8 +164,10 @@ export function useProgress() {
       startDate.setHours(0, 0, 0, 0);
       const diffDays = Math.floor((today.getTime() - startDate.getTime()) / 86400000);
       const currentDay = Math.min(diffDays + 1, 358);
+      // Start from today if complete, otherwise from yesterday
+      const startFrom = isDayComplete(currentDay) ? currentDay : currentDay - 1;
       let streak = 0;
-      for (let d = currentDay; d >= 1; d--) {
+      for (let d = startFrom; d >= 1; d--) {
         if (isDayComplete(d)) streak++;
         else break;
       }
