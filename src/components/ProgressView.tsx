@@ -46,7 +46,7 @@ export function ProgressView({ stats, isDayComplete, startDate }: ProgressViewPr
   };
 
   return (
-    <div className="px-4 pt-5 pb-20 max-w-lg mx-auto">
+    <div className="px-4 pt-5 pb-24 max-w-lg mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Progress</h1>
         <p className="text-sm text-muted-foreground">Your reading journey</p>
