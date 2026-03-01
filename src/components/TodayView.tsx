@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { readingPlan } from "@/data/readingPlan";
 import { DayCard } from "./DayCard";
-import { Flame, BookOpen, Play, CheckCircle2, AlertTriangle, TrendingUp } from "lucide-react";
+import { AlertTriangle, TrendingUp } from "lucide-react";
 
 interface TodayViewProps {
   getCurrentDay: () => number;
@@ -46,7 +46,6 @@ export function TodayView(props: TodayViewProps) {
   const dateLabel = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   const { stats } = props;
-  const overallPct = Math.round((stats.daysCompleted / stats.totalDays) * 100);
   const daysBehind = Math.max(0, (todayDay - 1) - stats.daysCompleted);
 
   // First day that is not yet complete (used by the behind banner)
@@ -105,40 +104,6 @@ export function TodayView(props: TodayViewProps) {
           Back to today (Day {todayDay})
         </button>
       )}
-
-      {/* Journey summary */}
-      <div className="mt-6">
-        <p className="text-sm font-bold mb-2 px-0.5">Your Journey</p>
-        <div className="bg-card rounded-2xl overflow-hidden">
-          {/* Progress bar row */}
-          <div className="px-4 py-3.5 flex items-center gap-3">
-            <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
-                style={{ width: `${overallPct}%` }}
-              />
-            </div>
-            <span className="text-sm font-bold text-primary w-10 text-right">{overallPct}%</span>
-          </div>
-          <div className="h-px bg-border/60 mx-4" />
-          {/* Stats rows */}
-          {[
-            { icon: Flame, label: "Streak", value: `${stats.streak} days`, color: "text-amber" },
-            { icon: CheckCircle2, label: "Days done", value: `${stats.daysCompleted} / ${stats.totalDays}`, color: "text-success" },
-            { icon: BookOpen, label: "Books", value: `${stats.booksCompleted} / ${stats.totalBooks}`, color: "text-primary" },
-            { icon: Play, label: "Videos", value: `${stats.videosWatched} / ${stats.totalVideos}`, color: "text-olive-light" },
-          ].map(({ icon: Icon, label, value, color }, i, arr) => (
-            <div key={label}>
-              <div className="px-4 py-3 flex items-center gap-3">
-                <Icon className={`w-4 h-4 shrink-0 ${color}`} />
-                <span className="flex-1 text-[15px]">{label}</span>
-                <span className="text-sm text-muted-foreground font-medium">{value}</span>
-              </div>
-              {i < arr.length - 1 && <div className="h-px bg-border/60 mx-4" />}
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
