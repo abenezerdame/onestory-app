@@ -4,7 +4,7 @@ import { DayReading } from "@/data/readingPlan";
 import { getYouVersionUrl, getPsalmUrl, parseChapters } from "@/data/bibleBooks";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Play, Check, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { BookOpen, Play, Check, CheckCircle2, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DayCardProps {
   reading: DayReading;
@@ -173,11 +173,9 @@ export function DayCard({
         {!complete && (
           <button
             onClick={() => markDayComplete(reading.day)}
-            className="w-full bg-card rounded-xl flex items-center gap-3 px-3.5 py-2.5 text-primary font-medium text-sm hover:bg-muted/30 active:bg-muted/50 transition-colors"
+            className="w-full mt-2 bg-primary text-primary-foreground rounded-2xl py-4 flex items-center justify-center gap-2 font-semibold text-sm shadow-sm hover:brightness-110 active:scale-[0.98] transition-all duration-150"
           >
-            <div className="shrink-0 w-[22px] h-[22px] rounded-full border-2 border-primary flex items-center justify-center">
-              <Check className="w-2.5 h-2.5 text-primary" strokeWidth={3} />
-            </div>
+            <CheckCircle2 className="w-4 h-4" />
             Mark Day Complete
           </button>
         )}
