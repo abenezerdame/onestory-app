@@ -1,7 +1,7 @@
 "use client";
 
 import { readingPlan, booksInOrder } from "@/data/readingPlan";
-import { BookOpen, Play, Flame, Calendar, CheckCircle2, Trophy } from "lucide-react";
+import { BookOpen, Play, Calendar, Trophy } from "lucide-react";
 
 interface ProgressViewProps {
   stats: {
@@ -22,13 +22,6 @@ interface ProgressViewProps {
 export function ProgressView({ stats, isDayComplete, startDate }: ProgressViewProps) {
   const overallPct = Math.round((stats.daysCompleted / stats.totalDays) * 100);
 
-  // Compute estimated completion
-  const daysIn = Math.max(1, Math.floor((Date.now() - new Date(startDate).getTime()) / 86400000) + 1);
-  const pace = stats.daysCompleted / daysIn;
-  const remaining = stats.totalDays - stats.daysCompleted;
-  const daysToFinish = pace > 0 ? Math.ceil(remaining / pace) : Infinity;
-  const estDate = new Date();
-  estDate.setDate(estDate.getDate() + daysToFinish);
 
   // Book grid data
   const bookDays: Record<string, number[]> = {};
@@ -71,12 +64,10 @@ export function ProgressView({ stats, isDayComplete, startDate }: ProgressViewPr
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 gap-2.5 mb-3">
-        <StatCard icon={Flame} label="Streak" value={`${stats.streak}`} sub="consecutive days" color="text-amber" />
         <StatCard icon={BookOpen} label="Chapters" value={`${stats.chaptersRead}`} sub="chapters read" color="text-primary" />
         <StatCard icon={Play} label="Videos" value={`${stats.videosWatched}/${stats.totalVideos}`} sub="watched" color="text-olive-light" />
         <StatCard icon={Trophy} label="Books" value={`${stats.booksCompleted}/${stats.totalBooks}`} sub="completed" color="text-amber" />
         <StatCard icon={Calendar} label="Psalms" value={`${stats.psalmsRead}`} sub="psalms read" color="text-primary" />
-        <StatCard icon={CheckCircle2} label="Est. Finish" value={daysToFinish < 9999 ? estDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "--"} sub={pace > 0 ? `${pace.toFixed(1)} days/day` : "start reading!"} color="text-success" />
       </div>
 
       {/* Book Grid */}
